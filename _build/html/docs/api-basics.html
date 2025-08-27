@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>DraCor API: first steps &#8212; DraCor Textbook</title>
+    <title>DraCor API basics &#8212; DraCor Textbook</title>
   
   
   
@@ -28,11 +28,11 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
   
@@ -174,7 +174,7 @@
         </ul>
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="syllabus.html">Syllabus</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">DraCor API: first steps</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">DraCor API basics</a></li>
 </ul>
 
     </div>
@@ -360,7 +360,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>DraCor API: first steps</h1>
+    <h1>DraCor API basics</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -370,7 +370,10 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-many-plays-per-corpus">How many plays per corpus?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#concepts-rest-base-url-and-endpoints">Concepts: REST, base URL, and endpoints</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#list-corpora">1) List corpora</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#count-plays-in-selected-corpora">2) Count plays in selected corpora</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualise-a-tiny-summary">3) Visualise a tiny summary</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise">Exercise</a></li>
 </ul>
             </nav>
@@ -383,173 +386,71 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="dracor-api-first-steps">
-<h1>DraCor API: first steps<a class="headerlink" href="#dracor-api-first-steps" title="Link to this heading">#</a></h1>
-<p>This short chapter shows how to list DraCor corpora and peek at a few plays via the HTTP API using a tiny helper (<code class="docutils literal notranslate"><span class="pre">utils/dracor_client.py</span></code>).</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="dracor-api-basics">
+<h1>DraCor API basics<a class="headerlink" href="#dracor-api-basics" title="Link to this heading">#</a></h1>
+<p>This short chapter introduces the DraCor REST API and shows how to access it <strong>directly with <code class="docutils literal notranslate"><span class="pre">requests</span></code></strong>. You will list available corpora and count plays in a few corpora using simple HTTP calls. The approach mirrors the original <em>API Tutorial</em> and keeps everything transparent and reproducible.</p>
 <blockquote>
 <div><p><strong>Learning goals</strong></p>
 <ul class="simple">
-<li><p>Call the DraCor API from Python.</p></li>
-<li><p>List available corpora and preview plays.</p></li>
+<li><p>Understand the base URL and how to build API requests.</p></li>
+<li><p>List available corpora and read their abbreviations.</p></li>
+<li><p>Retrieve and summarise plays for selected corpora.</p></li>
 </ul>
 <p><strong>Requirements</strong></p>
 <ul class="simple">
-<li><p>Basic Python; internet connection.</p></li>
+<li><p>Python (3.9+), internet connection.</p></li>
+<li><p>Packages: <code class="docutils literal notranslate"><span class="pre">requests</span></code>, <code class="docutils literal notranslate"><span class="pre">pandas</span></code>, <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> (already in this project’s <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>).</p></li>
 </ul>
 <p><strong>What you’ll do</strong></p>
 <ol class="arabic simple">
-<li><p>Import a small API helper. 2) Fetch corpora. 3) Count plays in a few corpora.</p></li>
+<li><p>Set a base API URL.</p></li>
+<li><p>Fetch <code class="docutils literal notranslate"><span class="pre">/corpora</span></code> and inspect results.</p></li>
+<li><p>Pick a few corpus abbreviations and count their plays.</p></li>
+<li><p>Make a tiny bar chart.</p></li>
 </ol>
-<p><strong>Exercise (at the end)</strong></p>
-<ul class="simple">
-<li><p>Repeat for different corpora; compare sizes and languages.</p></li>
-</ul>
 </div></blockquote>
+<section id="concepts-rest-base-url-and-endpoints">
+<h2>Concepts: REST, base URL, and endpoints<a class="headerlink" href="#concepts-rest-base-url-and-endpoints" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>REST API</strong>: You request data over HTTP by visiting specific URLs and the server responds with JSON.</p></li>
+<li><p><strong>Base URL</strong>: The common prefix for all API endpoints in DraCor:<br />
+<code class="docutils literal notranslate"><span class="pre">https://dracor.org/api/v1/</span></code></p></li>
+<li><p><strong>Endpoint</strong>: The path you append to the base URL to request something specific. Examples:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">corpora</span></code> → <code class="docutils literal notranslate"><span class="pre">https://dracor.org/api/v1/corpora</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">corpora/{name}/plays</span></code> → <code class="docutils literal notranslate"><span class="pre">https://dracor.org/api/v1/corpora/ger/plays</span></code> (here <code class="docutils literal notranslate"><span class="pre">{name}</span></code> is the <strong>abbreviation</strong> of a corpus, e.g. <code class="docutils literal notranslate"><span class="pre">ger</span></code>, <code class="docutils literal notranslate"><span class="pre">eng</span></code>, <code class="docutils literal notranslate"><span class="pre">rus</span></code>).</p></li>
+</ul>
+</li>
+<li><p><strong>Abbreviation / corpus name</strong>: In the <code class="docutils literal notranslate"><span class="pre">/corpora</span></code> response, the key <code class="docutils literal notranslate"><span class="pre">name</span></code> contains the short identifier you use in other endpoints.</p></li>
+</ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make project root importable so `from utils import dracor_client` works</span>
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
-<span class="c1"># If running the .ipynb from docs/, go one level up to project root</span>
-<span class="n">PROJECT_ROOT</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
-<span class="k">if</span> <span class="p">(</span><span class="n">PROJECT_ROOT</span> <span class="o">/</span> <span class="s2">&quot;docs&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-    <span class="n">PROJECT_ROOT</span> <span class="o">=</span> <span class="n">PROJECT_ROOT</span>
-
-<span class="c1"># Handle cases where the CWD is docs/ or the book’s build dir</span>
-<span class="n">candidates</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">PROJECT_ROOT</span><span class="p">,</span>                  <span class="c1"># when running in docs/</span>
-    <span class="n">PROJECT_ROOT</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span>           <span class="c1"># when running at project root</span>
-    <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;__file__&quot;</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span> <span class="k">else</span> <span class="kc">None</span>
-<span class="p">]</span>
-<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">candidates</span> <span class="k">if</span> <span class="n">c</span><span class="p">]:</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="o">/</span> <span class="s2">&quot;utils&quot;</span> <span class="o">/</span> <span class="s2">&quot;dracor_client.py&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
-        <span class="k">break</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Setup (pretty display and imports)</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;display.max_colwidth&quot;</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
-<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;display.precision&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-
-<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">dracor_client</span> <span class="k">as</span> <span class="n">dc</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Last run:&quot;</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M UTC&quot;</span><span class="p">))</span>
+<span class="n">API_URL</span> <span class="o">=</span> <span class="s2">&quot;https://dracor.org/api/v1/&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Base URL:&quot;</span><span class="p">,</span> <span class="n">API_URL</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Last run: 2025-08-27 14:03 UTC
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/var/folders/84/8bnpqjtx4gdbqmjxlnf650vw0000gn/T/ipykernel_60023/1323785047.py:8: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
-  print(&quot;Last run:&quot;, datetime.utcnow().strftime(&quot;%Y-%m-%d %H:%M UTC&quot;))
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Base URL: https://dracor.org/api/v1/
 </pre></div>
 </div>
 </div>
 </div>
+</section>
+<section id="list-corpora">
+<h2>1) List corpora<a class="headerlink" href="#list-corpora" title="Link to this heading">#</a></h2>
+<p>Request the list of corpora and inspect the first few entries. The <code class="docutils literal notranslate"><span class="pre">name</span></code> key is the abbreviation that you’ll use in subsequent endpoints.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1) Fetch all corpora</span>
-<span class="n">corpora</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">corpora</span><span class="p">()</span>
-<span class="nb">len</span><span class="p">(</span><span class="n">corpora</span><span class="p">),</span> <span class="n">corpora</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>  <span class="c1"># quick sanity check (length + first 2 items)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(21,
- [{&#39;description&#39;: &#39;Edited by Pablo Ruiz Fabo ([MeThAL project](https://methal.pages.unistra.fr/) at University of Strasbourg). Features a growing number of Alsation plays from the 19th and 20th century. For a corpus description and full credits please see the [README on GitHub](https://github.com/dracor-org/alsdracor).&#39;,
-   &#39;commit&#39;: &#39;3845f3d0fe1fe40d2fee15974235dbcc912f96ca&#39;,
-   &#39;uri&#39;: &#39;https://dracor.org/api/v1/corpora/als&#39;,
-   &#39;title&#39;: &#39;Alsatian Drama Corpus&#39;,
-   &#39;repository&#39;: &#39;https://github.com/dracor-org/alsdracor&#39;,
-   &#39;name&#39;: &#39;als&#39;,
-   &#39;acronym&#39;: &#39;AlsDraCor&#39;},
-  {&#39;description&#39;: &#39;Edited by Dennis Mischke, Luca Giovannini, Daniil Skorinkin. A vanilla corpus is being prepared for DH2024.&#39;,
-   &#39;commit&#39;: &#39;ceabc51c4068feb3e42b8ba343f774ef648ce8c0&#39;,
-   &#39;uri&#39;: &#39;https://dracor.org/api/v1/corpora/am&#39;,
-   &#39;title&#39;: &#39;American Drama Corpus&#39;,
-   &#39;repository&#39;: &#39;https://github.com/dracor-org/amdracor&#39;,
-   &#39;name&#39;: &#39;am&#39;,
-   &#39;acronym&#39;: &#39;AmDraCor&#39;}])
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 2) Put corpora into a tidy DataFrame</span>
-<span class="n">df_corpora</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">corpora</span><span class="p">)</span>
-<span class="c1"># Different corpora may expose different metadata; keep safe columns.</span>
-<span class="n">keep</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;languages&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df_corpora</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
-<span class="n">df_corpora</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">set_properties</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s2">&quot;text-align&quot;</span><span class="p">:</span> <span class="s2">&quot;left&quot;</span><span class="p">})</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><style type="text/css">
-#T_8c0bd_row0_col0, #T_8c0bd_row0_col1, #T_8c0bd_row1_col0, #T_8c0bd_row1_col1, #T_8c0bd_row2_col0, #T_8c0bd_row2_col1, #T_8c0bd_row3_col0, #T_8c0bd_row3_col1, #T_8c0bd_row4_col0, #T_8c0bd_row4_col1 {
-  text-align: left;
-}
-</style>
-<table id="T_8c0bd">
-  <thead>
-    <tr>
-      <th class="blank level0" >&nbsp;</th>
-      <th id="T_8c0bd_level0_col0" class="col_heading level0 col0" >name</th>
-      <th id="T_8c0bd_level0_col1" class="col_heading level0 col1" >description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th id="T_8c0bd_level0_row0" class="row_heading level0 row0" >0</th>
-      <td id="T_8c0bd_row0_col0" class="data row0 col0" >als</td>
-      <td id="T_8c0bd_row0_col1" class="data row0 col1" >Edited by Pablo Ruiz Fabo ([MeThAL project](https://methal.pages.unistra.fr/) at University of Strasbourg). Features a growing number of Alsation plays from the 19th and 20th century. For a corpus description and full credits please see the [README on GitHub](https://github.com/dracor-org/alsdracor).</td>
-    </tr>
-    <tr>
-      <th id="T_8c0bd_level0_row1" class="row_heading level0 row1" >1</th>
-      <td id="T_8c0bd_row1_col0" class="data row1 col0" >am</td>
-      <td id="T_8c0bd_row1_col1" class="data row1 col1" >Edited by Dennis Mischke, Luca Giovannini, Daniil Skorinkin. A vanilla corpus is being prepared for DH2024.</td>
-    </tr>
-    <tr>
-      <th id="T_8c0bd_level0_row2" class="row_heading level0 row2" >2</th>
-      <td id="T_8c0bd_row2_col0" class="data row2 col0" >bash</td>
-      <td id="T_8c0bd_row2_col1" class="data row2 col1" >Edited by Boris Orekhov. Contains a growing number of plays in the Bashkir language. Works still under copyright published with the permission of the rights holders.</td>
-    </tr>
-    <tr>
-      <th id="T_8c0bd_level0_row3" class="row_heading level0 row3" >3</th>
-      <td id="T_8c0bd_row3_col0" class="data row3 col0" >cal</td>
-      <td id="T_8c0bd_row3_col1" class="data row3 col1" >Edited by members of the [Institute of Romance Languages and Literatures at University of Tübingen](https://uni-tuebingen.de/en/fakultaeten/philosophische-fakultaet/fachbereiche/neuphilologie/romanisches-seminar/home/) and the [Institute of Romance Studies at University of Vienna](https://romanistik.univie.ac.at/). For a corpus description and full credits please see the [README on GitHub](https://github.com/dracor-org/caldracor).</td>
-    </tr>
-    <tr>
-      <th id="T_8c0bd_level0_row4" class="row_heading level0 row4" >4</th>
-      <td id="T_8c0bd_row4_col0" class="data row4 col0" >dutch</td>
-      <td id="T_8c0bd_row4_col1" class="data row4 col1" >Edited by Lucas van der Deijl. Features 180 Dutch-language plays from 1539-1786. For a corpus description and full credits please see the [README on GitHub](https://github.com/dracor-org/dutchdracor).</td>
-    </tr>
-  </tbody>
-</table>
-</div></div>
-</div>
-<section id="how-many-plays-per-corpus">
-<h2>How many plays per corpus?<a class="headerlink" href="#how-many-plays-per-corpus" title="Link to this heading">#</a></h2>
-<p>Let’s sample a handful of corpora and count how many plays each contains.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample</span> <span class="o">=</span> <span class="n">corpora</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span>  <span class="c1"># take the first six corpora for a quick preview</span>
-<span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">:</span>
-    <span class="n">cid</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">plays</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">corpus_plays</span><span class="p">(</span><span class="n">cid</span><span class="p">)</span>
-        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;corpus&quot;</span><span class="p">:</span> <span class="n">cid</span><span class="p">,</span> <span class="s2">&quot;n_plays&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">plays</span><span class="p">)})</span>
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;corpus&quot;</span><span class="p">:</span> <span class="n">cid</span><span class="p">,</span> <span class="s2">&quot;n_plays&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)[:</span><span class="mi">60</span><span class="p">]})</span>
-<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">corpus_list</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">API_URL</span> <span class="o">+</span> <span class="s2">&quot;corpora&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+<span class="c1"># show the first few abbreviations (&quot;name&quot;) and titles</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span> <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)}</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">corpus_list</span><span class="p">]</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -572,85 +473,203 @@ document.write(`
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>corpus</th>
-      <th>n_plays</th>
-      <th>error</th>
+      <th>name</th>
+      <th>title</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
-      <td>None</td>
-      <td>None</td>
-      <td>400 Client Error: Bad Request for url: https://dracor.org/ap</td>
+      <td>als</td>
+      <td>Alsatian Drama Corpus</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>None</td>
-      <td>None</td>
-      <td>400 Client Error: Bad Request for url: https://dracor.org/ap</td>
+      <td>am</td>
+      <td>American Drama Corpus</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>None</td>
-      <td>None</td>
-      <td>400 Client Error: Bad Request for url: https://dracor.org/ap</td>
+      <td>bash</td>
+      <td>Bashkir Drama Corpus</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>None</td>
-      <td>None</td>
-      <td>400 Client Error: Bad Request for url: https://dracor.org/ap</td>
+      <td>cal</td>
+      <td>Calderón Drama Corpus</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>None</td>
-      <td>None</td>
-      <td>400 Client Error: Bad Request for url: https://dracor.org/ap</td>
+      <td>dutch</td>
+      <td>Dutch Drama Corpus</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>None</td>
-      <td>None</td>
-      <td>400 Client Error: Bad Request for url: https://dracor.org/ap</td>
+      <td>eng</td>
+      <td>English Drama Corpus</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>fre</td>
+      <td>French Drama Corpus</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>ger</td>
+      <td>German Drama Corpus</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>gersh</td>
+      <td>German Shakespeare Drama Corpus</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>greek</td>
+      <td>Greek Drama Corpus</td>
     </tr>
   </tbody>
 </table>
 </div></div></div>
 </div>
+</section>
+<section id="count-plays-in-selected-corpora">
+<h2>2) Count plays in selected corpora<a class="headerlink" href="#count-plays-in-selected-corpora" title="Link to this heading">#</a></h2>
+<p>Pick a few corpus abbreviations from the table above (e.g., <code class="docutils literal notranslate"><span class="pre">ger</span></code>, <code class="docutils literal notranslate"><span class="pre">eng</span></code>, <code class="docutils literal notranslate"><span class="pre">rus</span></code>, <code class="docutils literal notranslate"><span class="pre">dutch</span></code>) and count how many plays each contains.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 3) Small bar chart (top: first six corpora)</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="n">counts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;n_plays&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;n_plays&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mf">3.5</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">counts</span><span class="p">[</span><span class="s2">&quot;corpus&quot;</span><span class="p">],</span> <span class="n">counts</span><span class="p">[</span><span class="s2">&quot;n_plays&quot;</span><span class="p">])</span> 
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Play counts (sampled corpora)&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;# plays&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="s2">&quot;abbrevs&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
+    <span class="n">corpus_list</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">API_URL</span> <span class="o">+</span> <span class="s2">&quot;corpora&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">abbrevs</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">corpus_list</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)]</span>
+
+<span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;cal&quot;</span><span class="p">,</span> <span class="s2">&quot;eng&quot;</span><span class="p">,</span> <span class="s2">&quot;rus&quot;</span><span class="p">,</span> <span class="s2">&quot;dutch&quot;</span><span class="p">]</span>
+<span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">targets</span> <span class="k">if</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">abbrevs</span><span class="p">]</span> <span class="ow">or</span> <span class="n">abbrevs</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using corpora:&quot;</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">count_plays_csv</span><span class="p">(</span><span class="n">corpus_abbr</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Count plays in a corpus from the CSV metadata endpoint.</span>
+<span class="sd">    This mirrors the original tutorial: /corpora/{name}/metadata with Accept: text/csv</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">API_URL</span><span class="si">}</span><span class="s2">corpora/</span><span class="si">{</span><span class="n">corpus_abbr</span><span class="si">}</span><span class="s2">/metadata&quot;</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Accept&quot;</span><span class="p">:</span> <span class="s2">&quot;text/csv&quot;</span><span class="p">},</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+    <span class="n">r</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+    <span class="c1"># Read CSV into a DataFrame; number of rows == number of plays</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="n">rows</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">abbr</span> <span class="ow">in</span> <span class="n">targets</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">count_plays_csv</span><span class="p">(</span><span class="n">abbr</span><span class="p">)</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;corpus&quot;</span><span class="p">:</span> <span class="n">abbr</span><span class="p">,</span> <span class="s2">&quot;n_plays&quot;</span><span class="p">:</span> <span class="n">n</span><span class="p">})</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;corpus&quot;</span><span class="p">:</span> <span class="n">abbr</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)})</span>
+
+<span class="k">if</span> <span class="n">rows</span><span class="p">:</span>
+    <span class="n">df_counts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;n_plays&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">df_counts</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No successful responses.&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Errors:&quot;</span><span class="p">)</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">errors</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/2aca5e846139ca051be2e6b653e7f22bafcc18c03118478ed5daf038b1532fca.png" src="../_images/2aca5e846139ca051be2e6b653e7f22bafcc18c03118478ed5daf038b1532fca.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Using corpora: [&#39;cal&#39;, &#39;eng&#39;, &#39;rus&#39;, &#39;dutch&#39;]
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>corpus</th>
+      <th>n_plays</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>eng</td>
+      <td>435</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>rus</td>
+      <td>212</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>cal</td>
+      <td>205</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>dutch</td>
+      <td>186</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<section id="visualise-a-tiny-summary">
+<h2>3) Visualise a tiny summary<a class="headerlink" href="#visualise-a-tiny-summary" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="ow">not</span> <span class="n">df_counts</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mf">3.5</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">df_counts</span><span class="p">[</span><span class="s2">&quot;corpus&quot;</span><span class="p">],</span> <span class="n">df_counts</span><span class="p">[</span><span class="s2">&quot;n_plays&quot;</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Play counts (selected corpora)&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;# plays&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No results to plot.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/4f0b575beb35bb72ee405d01d87faa2459f218456ce6e59c9d4269cb2ab1ee17.png" src="../_images/4f0b575beb35bb72ee405d01d87faa2459f218456ce6e59c9d4269cb2ab1ee17.png" />
 </div>
 </div>
 </section>
 <section id="exercise">
 <h2>Exercise<a class="headerlink" href="#exercise" title="Link to this heading">#</a></h2>
-<ol class="arabic simple">
-<li><p>Change <code class="docutils literal notranslate"><span class="pre">sample</span> <span class="pre">=</span> <span class="pre">corpora[:6]</span></code> to something like <code class="docutils literal notranslate"><span class="pre">sample</span> <span class="pre">=</span> <span class="pre">[c</span> <span class="pre">for</span> <span class="pre">c</span> <span class="pre">in</span> <span class="pre">corpora</span> <span class="pre">if</span> <span class="pre">c['id']</span> <span class="pre">in</span> <span class="pre">['ger',</span> <span class="pre">'rus',</span> <span class="pre">'ita']]</span></code>.</p></li>
-<li><p>Re-run the counting cell. Which corpus has the most plays?</p></li>
-<li><p>Optional: fetch the plays for one corpus (<code class="docutils literal notranslate"><span class="pre">dc.corpus_plays('ger')</span></code>) and list the first 5 titles as a table.</p></li>
+<ol class="arabic">
+<li><p>Replace <code class="docutils literal notranslate"><span class="pre">targets</span></code> with four different corpora from the table in step 1 and re-run the cells.</p></li>
+<li><p>For one of your corpora, list the first five play titles:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plays</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">API_URL</span> <span class="o">+</span> <span class="s2">&quot;corpora/ger/plays&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">),</span> <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)}</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plays</span><span class="p">])</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+<li><p>Optional: Add a column for the <strong>year</strong> (if present) and compute the earliest/latest play in the corpus.</p></li>
 </ol>
 <blockquote>
 <div><p><strong>Takeaways</strong></p>
 <ul class="simple">
-<li><p>You can access DraCor corpora and plays with a few lines of code.</p></li>
-<li><p>Keeping results in tidy DataFrames makes quick summaries and plots trivial.</p></li>
-<li><p>In later chapters we’ll navigate plays, characters, and networks in more detail.</p></li>
+<li><p>An API call is just a URL (<code class="docutils literal notranslate"><span class="pre">base</span></code> + <code class="docutils literal notranslate"><span class="pre">endpoint</span></code>).</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">name</span></code> field from <code class="docutils literal notranslate"><span class="pre">/corpora</span></code> is the key you plug into other endpoints.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">requests.get(...).json()</span></code> gives you a Python list/dict you can turn into a DataFrame quickly.</p></li>
 </ul>
 </div></blockquote>
 </section>
@@ -711,7 +730,10 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-many-plays-per-corpus">How many plays per corpus?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#concepts-rest-base-url-and-endpoints">Concepts: REST, base URL, and endpoints</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#list-corpora">1) List corpora</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#count-plays-in-selected-corpora">2) Count plays in selected corpora</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualise-a-tiny-summary">3) Visualise a tiny summary</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise">Exercise</a></li>
 </ul>
   </nav></div>
