@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
   
@@ -407,6 +407,31 @@ document.write(`
 </div></blockquote>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make project root importable so `from utils import dracor_client` works</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="c1"># If running the .ipynb from docs/, go one level up to project root</span>
+<span class="n">PROJECT_ROOT</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">PROJECT_ROOT</span> <span class="o">/</span> <span class="s2">&quot;docs&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+    <span class="n">PROJECT_ROOT</span> <span class="o">=</span> <span class="n">PROJECT_ROOT</span>
+
+<span class="c1"># Handle cases where the CWD is docs/ or the book’s build dir</span>
+<span class="n">candidates</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">PROJECT_ROOT</span><span class="p">,</span>                  <span class="c1"># when running in docs/</span>
+    <span class="n">PROJECT_ROOT</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span>           <span class="c1"># when running at project root</span>
+    <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;__file__&quot;</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span> <span class="k">else</span> <span class="kc">None</span>
+<span class="p">]</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">candidates</span> <span class="k">if</span> <span class="n">c</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="o">/</span> <span class="s2">&quot;utils&quot;</span> <span class="o">/</span> <span class="s2">&quot;dracor_client.py&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+        <span class="k">break</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Setup (pretty display and imports)</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;display.max_colwidth&quot;</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
@@ -419,16 +444,11 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">6</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;display.max_colwidth&quot;</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;display.precision&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="ne">----&gt; </span><span class="mi">6</span> <span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">dracor_client</span> <span class="k">as</span> <span class="n">dc</span>
-<span class="g g-Whitespace">      </span><span class="mi">7</span> <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="g g-Whitespace">      </span><span class="mi">8</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Last run:&quot;</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M UTC&quot;</span><span class="p">))</span>
-
-<span class="ne">ModuleNotFoundError</span>: No module named &#39;utils&#39;
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Last run: 2025-08-27 14:03 UTC
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/var/folders/84/8bnpqjtx4gdbqmjxlnf650vw0000gn/T/ipykernel_60023/1323785047.py:8: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  print(&quot;Last run:&quot;, datetime.utcnow().strftime(&quot;%Y-%m-%d %H:%M UTC&quot;))
 </pre></div>
 </div>
 </div>
@@ -438,6 +458,25 @@ document.write(`
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1) Fetch all corpora</span>
 <span class="n">corpora</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">corpora</span><span class="p">()</span>
 <span class="nb">len</span><span class="p">(</span><span class="n">corpora</span><span class="p">),</span> <span class="n">corpora</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>  <span class="c1"># quick sanity check (length + first 2 items)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(21,
+ [{&#39;description&#39;: &#39;Edited by Pablo Ruiz Fabo ([MeThAL project](https://methal.pages.unistra.fr/) at University of Strasbourg). Features a growing number of Alsation plays from the 19th and 20th century. For a corpus description and full credits please see the [README on GitHub](https://github.com/dracor-org/alsdracor).&#39;,
+   &#39;commit&#39;: &#39;3845f3d0fe1fe40d2fee15974235dbcc912f96ca&#39;,
+   &#39;uri&#39;: &#39;https://dracor.org/api/v1/corpora/als&#39;,
+   &#39;title&#39;: &#39;Alsatian Drama Corpus&#39;,
+   &#39;repository&#39;: &#39;https://github.com/dracor-org/alsdracor&#39;,
+   &#39;name&#39;: &#39;als&#39;,
+   &#39;acronym&#39;: &#39;AlsDraCor&#39;},
+  {&#39;description&#39;: &#39;Edited by Dennis Mischke, Luca Giovannini, Daniil Skorinkin. A vanilla corpus is being prepared for DH2024.&#39;,
+   &#39;commit&#39;: &#39;ceabc51c4068feb3e42b8ba343f774ef648ce8c0&#39;,
+   &#39;uri&#39;: &#39;https://dracor.org/api/v1/corpora/am&#39;,
+   &#39;title&#39;: &#39;American Drama Corpus&#39;,
+   &#39;repository&#39;: &#39;https://github.com/dracor-org/amdracor&#39;,
+   &#39;name&#39;: &#39;am&#39;,
+   &#39;acronym&#39;: &#39;AmDraCor&#39;}])
 </pre></div>
 </div>
 </div>
@@ -452,6 +491,49 @@ document.write(`
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html"><style type="text/css">
+#T_8c0bd_row0_col0, #T_8c0bd_row0_col1, #T_8c0bd_row1_col0, #T_8c0bd_row1_col1, #T_8c0bd_row2_col0, #T_8c0bd_row2_col1, #T_8c0bd_row3_col0, #T_8c0bd_row3_col1, #T_8c0bd_row4_col0, #T_8c0bd_row4_col1 {
+  text-align: left;
+}
+</style>
+<table id="T_8c0bd">
+  <thead>
+    <tr>
+      <th class="blank level0" >&nbsp;</th>
+      <th id="T_8c0bd_level0_col0" class="col_heading level0 col0" >name</th>
+      <th id="T_8c0bd_level0_col1" class="col_heading level0 col1" >description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_8c0bd_level0_row0" class="row_heading level0 row0" >0</th>
+      <td id="T_8c0bd_row0_col0" class="data row0 col0" >als</td>
+      <td id="T_8c0bd_row0_col1" class="data row0 col1" >Edited by Pablo Ruiz Fabo ([MeThAL project](https://methal.pages.unistra.fr/) at University of Strasbourg). Features a growing number of Alsation plays from the 19th and 20th century. For a corpus description and full credits please see the [README on GitHub](https://github.com/dracor-org/alsdracor).</td>
+    </tr>
+    <tr>
+      <th id="T_8c0bd_level0_row1" class="row_heading level0 row1" >1</th>
+      <td id="T_8c0bd_row1_col0" class="data row1 col0" >am</td>
+      <td id="T_8c0bd_row1_col1" class="data row1 col1" >Edited by Dennis Mischke, Luca Giovannini, Daniil Skorinkin. A vanilla corpus is being prepared for DH2024.</td>
+    </tr>
+    <tr>
+      <th id="T_8c0bd_level0_row2" class="row_heading level0 row2" >2</th>
+      <td id="T_8c0bd_row2_col0" class="data row2 col0" >bash</td>
+      <td id="T_8c0bd_row2_col1" class="data row2 col1" >Edited by Boris Orekhov. Contains a growing number of plays in the Bashkir language. Works still under copyright published with the permission of the rights holders.</td>
+    </tr>
+    <tr>
+      <th id="T_8c0bd_level0_row3" class="row_heading level0 row3" >3</th>
+      <td id="T_8c0bd_row3_col0" class="data row3 col0" >cal</td>
+      <td id="T_8c0bd_row3_col1" class="data row3 col1" >Edited by members of the [Institute of Romance Languages and Literatures at University of Tübingen](https://uni-tuebingen.de/en/fakultaeten/philosophische-fakultaet/fachbereiche/neuphilologie/romanisches-seminar/home/) and the [Institute of Romance Studies at University of Vienna](https://romanistik.univie.ac.at/). For a corpus description and full credits please see the [README on GitHub](https://github.com/dracor-org/caldracor).</td>
+    </tr>
+    <tr>
+      <th id="T_8c0bd_level0_row4" class="row_heading level0 row4" >4</th>
+      <td id="T_8c0bd_row4_col0" class="data row4 col0" >dutch</td>
+      <td id="T_8c0bd_row4_col1" class="data row4 col1" >Edited by Lucas van der Deijl. Features 180 Dutch-language plays from 1539-1786. For a corpus description and full credits please see the [README on GitHub](https://github.com/dracor-org/dutchdracor).</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
 </div>
 <section id="how-many-plays-per-corpus">
 <h2>How many plays per corpus?<a class="headerlink" href="#how-many-plays-per-corpus" title="Link to this heading">#</a></h2>
@@ -471,6 +553,70 @@ document.write(`
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>corpus</th>
+      <th>n_plays</th>
+      <th>error</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>None</td>
+      <td>None</td>
+      <td>400 Client Error: Bad Request for url: https://dracor.org/ap</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>None</td>
+      <td>None</td>
+      <td>400 Client Error: Bad Request for url: https://dracor.org/ap</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>None</td>
+      <td>None</td>
+      <td>400 Client Error: Bad Request for url: https://dracor.org/ap</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>None</td>
+      <td>None</td>
+      <td>400 Client Error: Bad Request for url: https://dracor.org/ap</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>None</td>
+      <td>None</td>
+      <td>400 Client Error: Bad Request for url: https://dracor.org/ap</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>None</td>
+      <td>None</td>
+      <td>400 Client Error: Bad Request for url: https://dracor.org/ap</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -486,6 +632,9 @@ document.write(`
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/2aca5e846139ca051be2e6b653e7f22bafcc18c03118478ed5daf038b1532fca.png" src="../_images/2aca5e846139ca051be2e6b653e7f22bafcc18c03118478ed5daf038b1532fca.png" />
 </div>
 </div>
 </section>
