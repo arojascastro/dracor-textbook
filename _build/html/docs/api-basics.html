@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>DraCor API basics\n\nIn this short demo we call the DraCor API using the helper in utils/dracor_client.py and preview a couple of results. &#8212; DraCor Textbook</title>
+    <title>DraCor API: first steps &#8212; DraCor Textbook</title>
   
   
   
@@ -174,7 +174,7 @@
         </ul>
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="syllabus.html">Syllabus</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">DraCor API basics\n\nIn this short demo we call the DraCor API using the helper in <code class="docutils literal notranslate"><span class="pre">utils/dracor_client.py</span></code> and preview a couple of results.</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">DraCor API: first steps</a></li>
 </ul>
 
     </div>
@@ -347,7 +347,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -358,11 +360,20 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>DraCor API basics\n\nIn this short demo we call the DraCor API using the helper in utils/dracor_client.py and preview a couple of results.</h1>
+    <h1>DraCor API: first steps</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-many-plays-per-corpus">How many plays per corpus?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise">Exercise</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -372,37 +383,128 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="dracor-api-basics-n-nin-this-short-demo-we-call-the-dracor-api-using-the-helper-in-utils-dracor-client-py-and-preview-a-couple-of-results">
-<h1>DraCor API basics\n\nIn this short demo we call the DraCor API using the helper in <code class="docutils literal notranslate"><span class="pre">utils/dracor_client.py</span></code> and preview a couple of results.<a class="headerlink" href="#dracor-api-basics-n-nin-this-short-demo-we-call-the-dracor-api-using-the-helper-in-utils-dracor-client-py-and-preview-a-couple-of-results" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="dracor-api-first-steps">
+<h1>DraCor API: first steps<a class="headerlink" href="#dracor-api-first-steps" title="Link to this heading">#</a></h1>
+<p>This short chapter shows how to list DraCor corpora and peek at a few plays via the HTTP API using a tiny helper (<code class="docutils literal notranslate"><span class="pre">utils/dracor_client.py</span></code>).</p>
+<blockquote>
+<div><p><strong>Learning goals</strong></p>
+<ul class="simple">
+<li><p>Call the DraCor API from Python.</p></li>
+<li><p>List available corpora and preview plays.</p></li>
+</ul>
+<p><strong>Requirements</strong></p>
+<ul class="simple">
+<li><p>Basic Python; internet connection.</p></li>
+</ul>
+<p><strong>What you’ll do</strong></p>
+<ol class="arabic simple">
+<li><p>Import a small API helper. 2) Fetch corpora. 3) Count plays in a few corpora.</p></li>
+</ol>
+<p><strong>Exercise (at the end)</strong></p>
+<ul class="simple">
+<li><p>Repeat for different corpora; compare sizes and languages.</p></li>
+</ul>
+</div></blockquote>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">dracor_client</span> <span class="k">as</span> <span class="n">dc</span>\<span class="n">ncorpora</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">corpora</span><span class="p">()</span>\<span class="n">ncorpora</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Setup (pretty display and imports)</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;display.max_colwidth&quot;</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;display.precision&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">dracor_client</span> <span class="k">as</span> <span class="n">dc</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Last run:&quot;</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M UTC&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>  <span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-    <span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">dracor_client</span> <span class="k">as</span> <span class="n">dc</span>\<span class="n">ncorpora</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">corpora</span><span class="p">()</span>\<span class="n">ncorpora</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
-                                          <span class="o">^</span>
-<span class="ne">SyntaxError</span>: unexpected character after line continuation character
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">6</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;display.max_colwidth&quot;</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;display.precision&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="ne">----&gt; </span><span class="mi">6</span> <span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">dracor_client</span> <span class="k">as</span> <span class="n">dc</span>
+<span class="g g-Whitespace">      </span><span class="mi">7</span> <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="g g-Whitespace">      </span><span class="mi">8</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Last run:&quot;</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M UTC&quot;</span><span class="p">))</span>
+
+<span class="ne">ModuleNotFoundError</span>: No module named &#39;utils&#39;
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>\<span class="n">ndf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">corpora</span><span class="p">)</span>\<span class="n">ndf</span><span class="p">[[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1) Fetch all corpora</span>
+<span class="n">corpora</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">corpora</span><span class="p">()</span>
+<span class="nb">len</span><span class="p">(</span><span class="n">corpora</span><span class="p">),</span> <span class="n">corpora</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>  <span class="c1"># quick sanity check (length + first 2 items)</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Pick the first corpus and list a few plays\nfirst_corpus = corpora[0][&#39;id&#39;]\nplays = dc.corpus_plays(first_corpus)\npd.DataFrame(plays)[[&#39;id&#39;,&#39;title&#39;]].head()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 2) Put corpora into a tidy DataFrame</span>
+<span class="n">df_corpora</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">corpora</span><span class="p">)</span>
+<span class="c1"># Different corpora may expose different metadata; keep safe columns.</span>
+<span class="n">keep</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;languages&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df_corpora</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+<span class="n">df_corpora</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">set_properties</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s2">&quot;text-align&quot;</span><span class="p">:</span> <span class="s2">&quot;left&quot;</span><span class="p">})</span>
 </pre></div>
 </div>
 </div>
 </div>
+<section id="how-many-plays-per-corpus">
+<h2>How many plays per corpus?<a class="headerlink" href="#how-many-plays-per-corpus" title="Link to this heading">#</a></h2>
+<p>Let’s sample a handful of corpora and count how many plays each contains.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample</span> <span class="o">=</span> <span class="n">corpora</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span>  <span class="c1"># take the first six corpora for a quick preview</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">:</span>
+    <span class="n">cid</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">plays</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">corpus_plays</span><span class="p">(</span><span class="n">cid</span><span class="p">)</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;corpus&quot;</span><span class="p">:</span> <span class="n">cid</span><span class="p">,</span> <span class="s2">&quot;n_plays&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">plays</span><span class="p">)})</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;corpus&quot;</span><span class="p">:</span> <span class="n">cid</span><span class="p">,</span> <span class="s2">&quot;n_plays&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)[:</span><span class="mi">60</span><span class="p">]})</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 3) Small bar chart (top: first six corpora)</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">counts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;n_plays&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;n_plays&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mf">3.5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">counts</span><span class="p">[</span><span class="s2">&quot;corpus&quot;</span><span class="p">],</span> <span class="n">counts</span><span class="p">[</span><span class="s2">&quot;n_plays&quot;</span><span class="p">])</span> 
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Play counts (sampled corpora)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;# plays&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="exercise">
+<h2>Exercise<a class="headerlink" href="#exercise" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>Change <code class="docutils literal notranslate"><span class="pre">sample</span> <span class="pre">=</span> <span class="pre">corpora[:6]</span></code> to something like <code class="docutils literal notranslate"><span class="pre">sample</span> <span class="pre">=</span> <span class="pre">[c</span> <span class="pre">for</span> <span class="pre">c</span> <span class="pre">in</span> <span class="pre">corpora</span> <span class="pre">if</span> <span class="pre">c['id']</span> <span class="pre">in</span> <span class="pre">['ger',</span> <span class="pre">'rus',</span> <span class="pre">'ita']]</span></code>.</p></li>
+<li><p>Re-run the counting cell. Which corpus has the most plays?</p></li>
+<li><p>Optional: fetch the plays for one corpus (<code class="docutils literal notranslate"><span class="pre">dc.corpus_plays('ger')</span></code>) and list the first 5 titles as a table.</p></li>
+</ol>
+<blockquote>
+<div><p><strong>Takeaways</strong></p>
+<ul class="simple">
+<li><p>You can access DraCor corpora and plays with a few lines of code.</p></li>
+<li><p>Keeping results in tidy DataFrames makes quick summaries and plots trivial.</p></li>
+<li><p>In later chapters we’ll navigate plays, characters, and networks in more detail.</p></li>
+</ul>
+</div></blockquote>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -450,6 +552,22 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-many-plays-per-corpus">How many plays per corpus?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise">Exercise</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
