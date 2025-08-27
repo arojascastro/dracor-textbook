@@ -1,36 +1,50 @@
+# utils/dracor_client.py
+from __future__ import annotations
+import time
+from typing import Dict, List, Any, Optional
 import requests
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
 
-BASE_URL = "https://dracor.org/api/v1"
+BASE = "https://dracor.org/api/v1"
+UA = "dracor-textbook/0.1 (+https://github.com/arojascastro/dracor-textbook)"
 
-def _session(timeout: float = 15.0) -> requests.Session:
-    s = requests.Session()
-    retries = Retry(
-        total=3,
-        backoff_factor=0.5,
-        status_forcelist=[429, 500, 502, 503, 504],
-        allowed_methods=["GET"]
-    )
-    s.mount("https://", HTTPAdapter(max_retries=retries))
-    return s
+def _get(path: str, params: Optional[Dict[str, Any]] = None, retries: int = 2, backoff: float = 0.6) -> Any:
+    url = f"{BASE}{path}"
+    last_exc = None
+    for attempt in range(retries + 1):
+        try:
+            r = requests.get(
+                url,
+                params=params,
+                headers={"Accept": "application/json", "User-Agent": UA},
+                timeout=15,
+            )
+            r.raise_for_status()
+            return r.json()
+        except requests.HTTPError as e:
+            msg = (getattr(e, "response", None).text or "")[:200] if getattr(e, "response", None) else ""
+            last_exc = requests.HTTPError(f"{e}; body: {msg}")
+        except requests.RequestException as e:
+            last_exc = e
+        if attempt < retries:
+            time.sleep(backoff * (2 ** attempt))
+    raise last_exc
 
-S = _session()
+def corpora() -> List[Dict[str, Any]]:
+    data = _get("/corpora")
+    out = []
+    for c in data:
+        slug = c.get("name") or c.get("id") or c.get("corpus")
+        if slug:
+            d = dict(c)
+            d["slug"] = slug
+            out.append(d)
+    return out
 
-def get(path: str, **params):
-    url = f"{BASE_URL.rstrip('/')}/{path.lstrip('/')}"
-    r = S.get(url, params=params, timeout=15)
-    r.raise_for_status()
-    return r.json()
+def corpus_plays(corpus_slug: str) -> List[Dict[str, Any]]:
+    return _get(f"/corpora/{corpus_slug}/plays")
 
-def corpora():
-    return get("corpora")
+def play_metadata(corpus_slug: str, play_id: str) -> Dict[str, Any]:
+    return _get(f"/corpora/{corpus_slug}/plays/{play_id}")
 
-def corpus_plays(corpus_id: str):
-    return get(f"corpora/{corpus_id}/plays")
-
-def characters(corpus_id: str, play_id: str):
-    return get(f"corpora/{corpus_id}/plays/{play_id}/characters")
-
-if __name__ == "__main__":
-    print([c["name"] for c in corpora()][:5])
+def play_characters(corpus_slug: str, play_id: str) -> List[Dict[str, Any]]:
+    return _get(f"/corpora/{corpus_slug}/plays/{play_id}/characters")
