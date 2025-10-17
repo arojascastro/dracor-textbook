@@ -28,11 +28,11 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
   
@@ -60,6 +60,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'docs/api-basics';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="System Message: WARNING/2 (/Users/Antonio/Documents/github/dracor-textbook/docs/dracor_textbook_chapter_template.md, line 14) Substitution error:UndefinedError: ‘title’ is undefined [myst.substitution]" href="dracor_textbook_chapter_template.html" />
     <link rel="prev" title="Syllabus" href="syllabus.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -175,6 +176,11 @@
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="syllabus.html">Syllabus</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">DraCor API basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dracor_textbook_chapter_template.html"><aside class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<span class="docutils literal">/Users/Antonio/Documents/github/dracor-textbook/docs/dracor_textbook_chapter_template.md</span>, line 14)</p>
+<p>Substitution error:UndefinedError: ‘title’ is undefined [myst.substitution]</p>
+</aside>
+</a></li>
 </ul>
 
     </div>
@@ -388,7 +394,7 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="dracor-api-basics">
 <h1>DraCor API basics<a class="headerlink" href="#dracor-api-basics" title="Link to this heading">#</a></h1>
-<p>This short chapter introduces the DraCor REST API and shows how to access it <strong>directly with <code class="docutils literal notranslate"><span class="pre">requests</span></code></strong>. You will list available corpora and count plays in a few corpora using simple HTTP calls. The approach mirrors the original <em>API Tutorial</em> and keeps everything transparent and reproducible.</p>
+<p>This short chapter introduces the DraCor REST API and shows how to access it <strong>with <code class="docutils literal notranslate"><span class="pre">requests</span></code></strong>. You will list available corpora and count plays in a few corpora using simple HTTP calls. The approach mirrors the original <em>API Tutorial</em> and keeps everything transparent and reproducible.</p>
 <blockquote>
 <div><p><strong>Learning goals</strong></p>
 <ul class="simple">
@@ -425,9 +431,9 @@ document.write(`
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="n">API_URL</span> <span class="o">=</span> <span class="s2">&quot;https://dracor.org/api/v1/&quot;</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Base URL:&quot;</span><span class="p">,</span> <span class="n">API_URL</span><span class="p">)</span>
@@ -535,33 +541,19 @@ document.write(`
 </section>
 <section id="count-plays-in-selected-corpora">
 <h2>2) Count plays in selected corpora<a class="headerlink" href="#count-plays-in-selected-corpora" title="Link to this heading">#</a></h2>
-<p>Pick a few corpus abbreviations from the table above (e.g., <code class="docutils literal notranslate"><span class="pre">ger</span></code>, <code class="docutils literal notranslate"><span class="pre">eng</span></code>, <code class="docutils literal notranslate"><span class="pre">rus</span></code>, <code class="docutils literal notranslate"><span class="pre">dutch</span></code>) and count how many plays each contains.</p>
+<p>Pick a few corpus abbreviations from the table above (e.g., <code class="docutils literal notranslate"><span class="pre">cal</span></code>, <code class="docutils literal notranslate"><span class="pre">eng</span></code>, <code class="docutils literal notranslate"><span class="pre">rus</span></code>, <code class="docutils literal notranslate"><span class="pre">dutch</span></code>) and count how many plays each contains.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="s2">&quot;abbrevs&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
-    <span class="n">corpus_list</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">API_URL</span> <span class="o">+</span> <span class="s2">&quot;corpora&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-    <span class="n">abbrevs</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">corpus_list</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">io</span>
 
 <span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;cal&quot;</span><span class="p">,</span> <span class="s2">&quot;eng&quot;</span><span class="p">,</span> <span class="s2">&quot;rus&quot;</span><span class="p">,</span> <span class="s2">&quot;dutch&quot;</span><span class="p">]</span>
 <span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">targets</span> <span class="k">if</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">abbrevs</span><span class="p">]</span> <span class="ow">or</span> <span class="n">abbrevs</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using corpora:&quot;</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">count_plays_csv</span><span class="p">(</span><span class="n">corpus_abbr</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Count plays in a corpus from the CSV metadata endpoint.</span>
-<span class="sd">    This mirrors the original tutorial: /corpora/{name}/metadata with Accept: text/csv</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">API_URL</span><span class="si">}</span><span class="s2">corpora/</span><span class="si">{</span><span class="n">corpus_abbr</span><span class="si">}</span><span class="s2">/metadata&quot;</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Accept&quot;</span><span class="p">:</span> <span class="s2">&quot;text/csv&quot;</span><span class="p">},</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
-    <span class="n">r</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
-    <span class="c1"># Read CSV into a DataFrame; number of rows == number of plays</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
-    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-
 <span class="n">rows</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">abbr</span> <span class="ow">in</span> <span class="n">targets</span><span class="p">:</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="n">count_plays_csv</span><span class="p">(</span><span class="n">abbr</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">count_plays_csv</span><span class="p">(</span><span class="n">abbr</span><span class="p">)</span>   <span class="c1"># uses io.StringIO, so io must be imported already</span>
         <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;corpus&quot;</span><span class="p">:</span> <span class="n">abbr</span><span class="p">,</span> <span class="s2">&quot;n_plays&quot;</span><span class="p">:</span> <span class="n">n</span><span class="p">})</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;corpus&quot;</span><span class="p">:</span> <span class="n">abbr</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)})</span>
@@ -570,11 +562,12 @@ document.write(`
     <span class="n">df_counts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;n_plays&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">display</span><span class="p">(</span><span class="n">df_counts</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
+    <span class="n">df_counts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>  <span class="c1"># define empty so later cells don&#39;t break</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No successful responses.&quot;</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Errors:&quot;</span><span class="p">)</span>
-    <span class="n">display</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">errors</span><span class="p">))</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">errors</span><span class="p">))</span>   
 </pre></div>
 </div>
 </div>
@@ -713,6 +706,19 @@ document.write(`
         <p class="prev-next-subtitle">previous</p>
         <p class="prev-next-title">Syllabus</p>
       </div>
+    </a>
+    <a class="right-next"
+       href="dracor_textbook_chapter_template.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><aside class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<span class="docutils literal">/Users/Antonio/Documents/github/dracor-textbook/docs/dracor_textbook_chapter_template.md</span>, line 14)</p>
+<p>Substitution error:UndefinedError: ‘title’ is undefined [myst.substitution]</p>
+</aside>
+</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
                 </footer>

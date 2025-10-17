@@ -11,7 +11,7 @@ format: jb-book
 # - Keep British English across the textbook.
 ---
 
-# {{ title }}
+# Insert Chapter Title
 
 <!--
 This is a contributor-facing template for DraCor Textbook chapters.
