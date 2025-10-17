@@ -3,4 +3,4 @@ root: docs/index
 chapters:
   - file: docs/syllabus
   - file: docs/api-basics
-  - file: dracor_textbook_chapter_template
+  - file: docs/dracor_textbook_chapter_template
