@@ -11,7 +11,7 @@ format: jb-book
 # - Keep British English across the textbook.
 ---
 
-# Insert Chapter Title
+# {{ title }}
 
 <!--
 This is a contributor-facing template for DraCor Textbook chapters.
@@ -122,7 +122,7 @@ Point to the immediate next chapter(s) and an advanced alternative.
 
 Use in-text citations and include a short list here. 
 
-- <Author>. <Year>. <Title>. <Venue>. <DOI/URL>.
+- <Author, Year>. <Title>. <Venue>. <DOI/URL>.
 
 ---
 
