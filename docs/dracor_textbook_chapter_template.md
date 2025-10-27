@@ -1,5 +1,7 @@
 ---
 title: "Insert Chapter Title"
+substitutions:
+  title: "Template"
 author: "Your Name Here"  # Prefer a single string; add multiple authors separated by commas if needed
 date: "2025-11-01" # Use YYYY-MM-DD
 description: "Short, 1 or 2 sentence summary of the chapter's purpose and scope."
@@ -11,7 +13,7 @@ format: jb-book
 # - Keep British English across the textbook.
 ---
 
-# {{ title }}
+# {substitutions}`title`
 
 <!--
 This is a contributor-facing template for DraCor Textbook chapters.
