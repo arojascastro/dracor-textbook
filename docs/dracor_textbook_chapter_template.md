@@ -12,7 +12,7 @@ license: "CC BY 4.0"
 # - Keep British English across the textbook.
 ---
 
-# {sub-ref}`chap_title`
+# Front-End
 
 <!--
 This is a contributor-facing template for DraCor Textbook chapters.
