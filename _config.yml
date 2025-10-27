@@ -1,8 +1,6 @@
 title: "DraCor Textbook"
 author: "DraCorOS Team"
 only_build_toc_files: true
-execute:
-  execute_notebooks: auto
 repository:
   url: https://github.com/arojascastro/dracor-textbook
   path_to_book: .
