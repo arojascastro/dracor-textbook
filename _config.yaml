@@ -1,0 +1,13 @@
+title: "DraCor Textbook"
+author: "DraCor Team"
+only_build_toc_files: true
+
+parse:
+  myst_enable_extensions:
+    - colon_fence
+    - deflist
+    - linkify
+    - substitution
+
+execute:
+  execute_notebooks: "off"
