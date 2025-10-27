@@ -1,20 +1,25 @@
 title: "DraCor Textbook"
 author: "DraCorOS Team"
 only_build_toc_files: true
+
 repository:
   url: https://github.com/arojascastro/dracor-textbook
   path_to_book: .
   branch: main
+
 html:
   use_repository_button: true
   use_issues_button: true
+
 bibtex_bibfiles:
   - references.bib
+
 parse:
   myst_enable_extensions:
     - colon_fence
     - deflist
     - linkify
     - substitution
+
 execute:
   execute_notebooks: "off"

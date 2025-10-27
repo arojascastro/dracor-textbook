@@ -7,7 +7,6 @@ date: "2025-11-01" # Use YYYY-MM-DD
 description: "Short, 1 or 2 sentence summary of the chapter's purpose and scope."
 keywords: ["DraCor", "digital humanities", "programmable corpora"] # Adapt keywords to fit your chapter; make it specific
 license: "CC BY 4.0"
-format: jb-book
 # Jupyter Book notes:
 # - The book structure (chapters) is defined in _toc.yml; keep this file as a single chapter page.
 # - Keep British English across the textbook.
