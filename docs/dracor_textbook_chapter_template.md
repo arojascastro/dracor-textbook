@@ -12,13 +12,14 @@ license: "CC BY 4.0"
 # - Keep British English across the textbook.
 ---
 
-# Front-End
-
 <!--
 This is a contributor-facing template for DraCor Textbook chapters.
 Audience: beginner first; no prior programming knowledge assumed.
 Keep prose clear and concise; avoid unexplained jargon.
 -->
+
+# Front-End <!-- Add here your Title Chapter -->
+
 
 ```{note}
 **How to use this template:** Replace placeholders, keep the section order, and keep examples concise. Screenshots and short code snippets are welcome.
