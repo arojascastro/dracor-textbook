@@ -12,3 +12,11 @@ html:
   use_issues_button: true
 bibtex_bibfiles:
   - references.bib
+parse:
+  myst_enable_extensions:
+    - colon_fence
+    - deflist
+    - linkify
+    - substitution
+execute:
+  execute_notebooks: "off"
